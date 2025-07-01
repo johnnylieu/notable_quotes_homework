@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", function () {
 function showAnonymousQuotes(count) {
     let html = "<ol>";
     for (let c = 1; c <= count; c++) {
-        html += <li>Quote ${c} - Anonymous</li>;
+        html += `<li>Quote ${c} - Anonymous</li>`;
     }
     html += "</ol>";
 
@@ -27,7 +27,29 @@ function showAnonymousQuotes(count) {
 
 function fetchQuotes(topic, count) {
     // TODO: Modify to use Fetch API
+    const quotesDiv = document.getElementById("quotes");
 
-    // TODO: Remove the call to showAnonymousQuotes()
-    showAnonymousQuotes(count);
+    if (topic === "Choose one") {
+        quotesDiv.innerHTML = "Please select a valid topic.";
+    }
+
+    const url = `https://wp.zybooks.com/quotes.php?topic=${topic}&count=${count}`;
+
+    fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.error) {
+                quotesDiv.innerHTML = data.error;
+            } else {
+                data.forEach(function (quotes) {
+                    let html = "<ol>";
+                    data.forEach(function (quotes) {
+                        html += `<li>${quotes.quote} - ${quotes.source}</li>`;
+                    });
+                    html += "</ol";
+
+                    document.getElementById("quotes").innerHTML = html;
+                });
+            }
+        });
 }
